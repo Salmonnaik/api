@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Me-API Playground</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-8">Me-API Playground</h1>
+
+    <!-- Profile Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+      <h2 class="text-2xl font-semibold mb-4">Profile</h2>
+      <div id="profile-loading" class="text-gray-500">Loading profile...</div>
+      <div id="profile-error" class="text-red-500 hidden"></div>
+      <div id="profile-content" class="hidden">
+        <p><strong>Name:</strong> <span id="name"></span></p>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Education:</strong> <span id="education"></span></p>
+        <p><strong>GitHub:</strong> <a id="github" href="#" target="_blank" class="text-blue-500"></a></p>
+        <p><strong>LinkedIn:</strong> <a id="linkedin" href="#" target="_blank" class="text-blue-500"></a></p>
+        <p><strong>Portfolio:</strong> <a id="portfolio" href="#" target="_blank" class="text-blue-500"></a></p>
+      </div>
+    </div>
+
+    <!-- Projects Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4">Search Projects by Skill</h2>
+      <input type="text" id="skill-input" placeholder="Enter skill (e.g., Node)" class="border p-2 rounded w-full mb-4">
+      <button id="search-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Search</button>
+      <div id="projects-loading" class="text-gray-500 mt-4 hidden">Searching projects...</div>
+      <div id="projects-error" class="text-red-500 mt-4 hidden"></div>
+      <div id="projects-content" class="mt-4 hidden">
+        <ul id="projects-list" class="space-y-2"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load Profile
+    async function loadProfile() {
+      try {
+        const response = await fetch('/api/profile');
+        if (!response.ok) throw new Error('Failed to load profile');
+        const data = await response.json();
+        document.getElementById('profile-loading').classList.add('hidden');
+        document.getElementById('profile-content').classList.remove('hidden');
+        document.getElementById('name').textContent = data.name;
+        document.getElementById('email').textContent = data.email;
+        document.getElementById('education').textContent = data.education;
+        document.getElementById('github').href = data.github;
+        document.getElementById('github').textContent = data.github;
+        document.getElementById('linkedin').href = data.linkedin;
+        document.getElementById('linkedin').textContent = data.linkedin;
+        document.getElementById('portfolio').href = data.portfolio;
+        document.getElementById('portfolio').textContent = data.portfolio;
+      } catch (error) {
+        document.getElementById('profile-loading').classList.add('hidden');
+        document.getElementById('profile-error').classList.remove('hidden');
+        document.getElementById('profile-error').textContent = error.message;
+      }
+    }
+
+    // Search Projects
+    async function searchProjects(skill) {
+      document.getElementById('projects-loading').classList.remove('hidden');
+      document.getElementById('projects-error').classList.add('hidden');
+      document.getElementById('projects-content').classList.add('hidden');
+      try {
+        const response = await fetch(`/api/projects?skill=${encodeURIComponent(skill)}`);
+        if (!response.ok) throw new Error('Failed to search projects');
+        const data = await response.json();
+        document.getElementById('projects-loading').classList.add('hidden');
+        document.getElementById('projects-content').classList.remove('hidden');
+        const list = document.getElementById('projects-list');
+        list.innerHTML = '';
+        if (data.length === 0) {
+          list.innerHTML = '<li>No projects found.</li>';
+        } else {
+          data.forEach(project => {
+            const li = document.createElement('li');
+            li.className = 'border-b pb-2';
+            li.innerHTML = `
+              <h3 class="font-semibold">${project.title}</h3>
+              <p>${project.description}</p>
+              <p><strong>Skill:</strong> ${project.skill}</p>
+              <p><strong>Links:</strong> ${project.links.map(link => `<a href="${link}" target="_blank" class="text-blue-500">${link}</a>`).join(', ')}</p>
+            `;
+            list.appendChild(li);
+          });
+        }
+      } catch (error) {
+        document.getElementById('projects-loading').classList.add('hidden');
+        document.getElementById('projects-error').classList.remove('hidden');
+        document.getElementById('projects-error').textContent = error.message;
+      }
+    }
+
+    // Event Listeners
+    document.getElementById('search-btn').addEventListener('click', () => {
+      const skill = document.getElementById('skill-input').value.trim();
+      if (skill) searchProjects(skill);
+    });
+
+    // Load profile on page load
+    loadProfile();
+  </script>
+</body>
+</html>
