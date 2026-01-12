@@ -31,11 +31,15 @@ This project provides a simple API playground featuring:
 
 `GET /api/health`
 
+"https://api-playground-sigma.vercel.app/api/health"
+
 - Returns: `{ "status": "ok" }`
 
 ### Get Profile
 
 `GET /api/profile`
+
+"https://api-playground-sigma.vercel.app/api/profile"
 
 - Fetches profile data from Supabase
 - Returns JSON object with profile information
@@ -43,6 +47,8 @@ This project provides a simple API playground featuring:
 ### Search Projects by Skill
 
 `GET /api/projects?skill=<skill>`
+
+"https://api-playground-sigma.vercel.app/api/projects?skill=Node"
 
 - Performs case-insensitive search on projects by skill
 - Returns array of matching projects
