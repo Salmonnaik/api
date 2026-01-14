@@ -1,108 +1,75 @@
 # Me-API Playground
 
-A production-ready backend API with a minimal frontend demonstrating API usage, built for internship assessment Track A.
+A simple web app that displays profile information and allows searching projects by skill, backed by Supabase.
 
-## Project Overview
+## Setup
 
-This project provides a simple API playground featuring:
+1. **Create a Supabase project:**
+   - Go to [supabase.com](https://supabase.com) and create a new project
+   - Note down your project URL and anon key from the project settings
 
-- Health check endpoint
-- Profile retrieval from database
-- Project search by skill
-- Minimal frontend to demonstrate API usage
+2. **Configure environment variables:**
+   - Copy `.env` file and update the values:
+     ```
+     SUPABASE_URL=your_actual_supabase_url
+     SUPABASE_ANON_KEY=your_actual_anon_key
+     ```
 
-## Architecture
+3. **Set up database tables:**
+   - In your Supabase dashboard, go to the SQL Editor
+   - Run the following SQL to create the tables:
 
-- **Backend**: Node.js serverless functions on Vercel
-- **Database**: Supabase (PostgreSQL)
-- **Frontend**: Vanilla HTML/CSS/JS with Tailwind CSS
-- **Deployment**: Vercel for both backend and frontend
+   ```sql
+   -- Create profile table
+   CREATE TABLE profile (
+     id SERIAL PRIMARY KEY,
+     name TEXT NOT NULL,
+     email TEXT NOT NULL,
+     education TEXT,
+     github TEXT,
+     linkedin TEXT,
+     portfolio TEXT
+   );
 
-## Tech Stack
+   -- Insert sample profile data
+   INSERT INTO profile (name, email, education, github, linkedin, portfolio)
+   VALUES ('Your Name', 'your.email@example.com', 'Your Education', 'https://github.com/yourusername', 'https://linkedin.com/in/yourprofile', 'https://yourportfolio.com');
 
-- Node.js (ES Modules)
-- Vercel Serverless Functions
-- Supabase
-- HTML, Tailwind CSS, Vanilla JavaScript
+   -- Create projects table
+   CREATE TABLE projects (
+     id SERIAL PRIMARY KEY,
+     title TEXT NOT NULL,
+     description TEXT,
+     skill TEXT NOT NULL,
+     links TEXT[]
+   );
+
+   -- Insert sample projects
+   INSERT INTO projects (title, description, skill, links)
+   VALUES
+     ('Project 1', 'Description of project 1', 'JavaScript', ARRAY['https://github.com/user/project1']),
+     ('Project 2', 'Description of project 2', 'Node.js', ARRAY['https://github.com/user/project2']),
+     ('Project 3', 'Description of project 3', 'React', ARRAY['https://github.com/user/project3']);
+   ```
+
+4. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+5. **Run locally:**
+   ```bash
+   npm run dev
+   ```
+
+6. **Deploy to Vercel:**
+   - Push to GitHub
+   - Connect to Vercel
+   - Set environment variables in Vercel dashboard
 
 ## API Endpoints
 
-### Health Check
-
-`GET /api/health`
-
-"https://api-playground-sigma.vercel.app/api/health"
-
-- Returns: `{ "status": "ok" }`
-
-### Get Profile
-
-`GET /api/profile`
-
-"https://api-playground-sigma.vercel.app/api/profile"
-
-- Fetches profile data from Supabase
-- Returns JSON object with profile information
-
-### Search Projects by Skill
-
-`GET /api/projects?skill=<skill>`
-
-"https://api-playground-sigma.vercel.app/api/projects?skill=Node"
-
-- Performs case-insensitive search on projects by skill
-- Returns array of matching projects
-
-## Database Schema
-
-### Profile Table
-
-- id (SERIAL PRIMARY KEY)
-- name (TEXT)
-- email (TEXT)
-- education (TEXT)
-- github (TEXT)
-- linkedin (TEXT)
-- portfolio (TEXT)
-
-### Projects Table
-
-- id (SERIAL PRIMARY KEY)
-- title (TEXT)
-- description (TEXT)
-- skill (TEXT)
-- links (TEXT[])
-
-## Setup Steps
-
-1. Clone this repository
-2. Install dependencies: `npm install`
-3. Set up Supabase:
-   - Create a new Supabase project
-   - Run the SQL in `schema.sql` in Supabase SQL editor
-   - Note your SUPABASE_URL and SUPABASE_KEY
-4. Deploy to Vercel:
-   - Connect your GitHub repo to Vercel
-   - Set environment variables: SUPABASE_URL and SUPABASE_KEY
-   - Deploy
-
-## Live URLs
-
-- Frontend: [Your Vercel URL]
-- API Base: [Your Vercel URL]/api
-
-## Resume Link
-
-[Your Resume Link]
-
-## Testing Checklist
-
-- [ ] Health endpoint returns 200 with {status: "ok"}
-- [ ] Profile endpoint returns profile data
-- [ ] Projects endpoint returns array for valid skill
-- [ ] Projects endpoint returns 400 for missing skill
-- [ ] Frontend loads profile on page load
-- [ ] Frontend searches projects correctly
-- [ ] Error states display properly
-- [ ] All links are valid and working
-- [ ] No console errors in browser
+- `GET /api/health` - Health check
+- `GET /api/profile` - Get profile information
+- `GET /api/projects?skill=<skill>` - Search projects by skill</content>
+<parameter name="filePath">c:\Users\bodas\OneDrive\Desktop\api-final\README.md
